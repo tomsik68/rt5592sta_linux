@@ -63,13 +63,13 @@ endif
 endif
 
 install:
-	install -d $(LINUX_SRC_MODULE)
-	install -m 644 -c $(addsuffix .o,$(MOD_NAME)) $(LINUX_SRC_MODULE)
-	/sbin/depmod -a ${shell uname -r}
+	install -d $(DESTDIR)$(LINUX_SRC_MODULE)
+	install -m 644 -c $(addsuffix .o,$(MOD_NAME)) $(DESTDIR)$(LINUX_SRC_MODULE)
+#	/sbin/depmod -a ${shell uname -r}
 
 uninstall:
-	rm -rf $(addprefix $(LINUX_SRC_MODULE),$(addsuffix .o,$(MOD_NAME)))
-	/sbin/depmod -a ${shell uname -r}
+	rm -rf $(addprefix $(DESTDIR)$(LINUX_SRC_MODULE),$(addsuffix .o,$(MOD_NAME)))
+#	/sbin/depmod -a ${shell uname -r}
 
 # Declare the contents of the .PHONY variable as phony.  We keep that
 # # information in a variable so we can use it in if_changed and friends.

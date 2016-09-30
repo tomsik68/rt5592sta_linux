@@ -332,7 +332,7 @@ THREADX:
 	$(MAKE) -C $(RT28xx_DIR)/os/Threadx -f $(RT28xx_DIR)/os/ThreadX/Makefile
 
 LINUX:
-ifneq (,$(findstring 2.4,$(LINUX_SRC)))
+ifneq (,$(findstring 2.4,$(LINUX_SRC)))		
 
 ifeq ($(OSABL),YES)
 	cp -f os/linux/Makefile.4.util $(RT28xx_DIR)/os/linux/Makefile
@@ -347,30 +347,6 @@ ifeq ($(OSABL),YES)
 	$(MAKE) -C $(RT28xx_DIR)/os/linux/
 endif
 
-ifeq ($(RT28xx_MODE),AP)
-	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)ap.o /tftpboot
-ifeq ($(OSABL),YES)
-	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)ap.o /tftpboot
-	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)ap.o /tftpboot
-endif
-ifeq ($(PLATFORM),INF_AMAZON_SE)
-	cp -f /tftpboot/rt2870ap.o /backup/ifx/build/root_filesystem/lib/modules/2.4.31-Amazon_SE-3.6.2.2-R0416_Ralink/kernel/drivers/net
-endif
-else	
-ifeq ($(RT28xx_MODE),APSTA)
-	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)apsta.o /tftpboot
-ifeq ($(OSABL),YES)
-	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)apsta.o /tftpboot
-	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)apsta.o /tftpboot
-endif
-else
-	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)sta.o /tftpboot
-ifeq ($(OSABL),YES)
-	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)sta.o /tftpboot
-	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)sta.o /tftpboot
-endif
-endif	
-endif	
 else
 
 ifeq ($(OSABL),YES)
@@ -394,29 +370,7 @@ ifeq ($(OSABL),YES)
 	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(RT28xx_DIR)/os/linux modules
 endif
 
-ifeq ($(RT28xx_MODE),AP)
-	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)ap.ko /tftpboot
-ifeq ($(OSABL),YES)
-	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)ap.ko /tftpboot
-	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)ap.ko /tftpboot
-endif
-	rm -f os/linux/rt$(MODULE)ap.ko.lzma
-	/root/bin/lzma e os/linux/rt$(MODULE)ap.ko os/linux/rt$(MODULE)ap.ko.lzma
-else	
-ifeq ($(RT28xx_MODE),APSTA)
-	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)apsta.ko /tftpboot
-ifeq ($(OSABL),YES)
-	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)apsta.ko /tftpboot
-	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)apsta.ko /tftpboot
-endif
-else
-	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)sta.ko /tftpboot
-ifeq ($(OSABL),YES)
-	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)sta.ko /tftpboot
-	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)sta.ko /tftpboot
-endif
-endif
-endif
+
 endif
 
 
@@ -467,13 +421,80 @@ endif
 endif
 
 install:
+
 ifeq ($(TARGET), LINUX)
 ifneq (,$(findstring 2.4,$(LINUX_SRC)))
 	$(MAKE) -C $(RT28xx_DIR)/os/linux -f Makefile.4 install
+
+
 else
 	$(MAKE) -C $(RT28xx_DIR)/os/linux -f Makefile.6 install
+
 endif
 endif
+
+############# START IF PART TO MOVE TO INSTALL TARGET
+## START PART TO BE ADDED 
+ifneq (,$(findstring 2.4,$(LINUX_SRC)))		
+## END PART TO BE ADDED
+ifeq ($(RT28xx_MODE),AP)
+	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)ap.o $(DESTDIR)/tftpboot
+ifeq ($(OSABL),YES)
+	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)ap.o $(DESTDIR)/tftpboot
+	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)ap.o $(DESTDIR)/tftpboot
+endif
+ifeq ($(PLATFORM),INF_AMAZON_SE)
+	cp -f /tftpboot/rt2870ap.o $(DESTDIR)/backup/ifx/build/root_filesystem/lib/modules/2.4.31-Amazon_SE-3.6.2.2-R0416_Ralink/kernel/drivers/net
+endif
+else	
+ifeq ($(RT28xx_MODE),APSTA)
+	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)apsta.o $(DESTDIR)/tftpboot
+ifeq ($(OSABL),YES)
+	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)apsta.o $(DESTDIR)/tftpboot
+	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)apsta.o $(DESTDIR)/tftpboot
+endif
+else
+	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)sta.o $(DESTDIR)/tftpboot
+ifeq ($(OSABL),YES)
+	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)sta.o $(DESTDIR)/tftpboot
+	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)sta.o $(DESTDIR)/tftpboot
+endif
+endif	
+endif	
+
+## START PART TO BE MOVED TO INSTALL
+else
+
+ifeq ($(RT28xx_MODE),AP)
+	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)ap.ko $(DESTDIR)/tftpboot
+ifeq ($(OSABL),YES)
+	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)ap.ko $(DESTDIR)/tftpboot
+	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)ap.ko $(DESTDIR)/tftpboot
+endif
+	rm -f os/linux/rt$(MODULE)ap.ko.lzma
+	/root/bin/lzma e os/linux/rt$(MODULE)ap.ko os/linux/rt$(MODULE)ap.ko.lzma
+else	
+ifeq ($(RT28xx_MODE),APSTA)
+	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)apsta.ko $(DESTDIR)/tftpboot
+ifeq ($(OSABL),YES)
+	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)apsta.ko $(DESTDIR)/tftpboot
+	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)apsta.ko $(DESTDIR)/tftpboot
+endif
+else
+	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)sta.ko $(DESTDIR)/tftpboot
+ifeq ($(OSABL),YES)
+	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)sta.ko $(DESTDIR)/tftpboot
+	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)sta.ko $(DESTDIR)/tftpboot
+endif
+endif
+endif
+## END PART TO BE MOVED TO INSTALL
+
+## START PART TO BE ADDED
+endif
+## END PART TO BE ADDED
+############# END IF PART TO MOVE TO INSTALL TARGET
+
 
 libwapi:
 ifneq (,$(findstring 2.4,$(LINUX_SRC)))
