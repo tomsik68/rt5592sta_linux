@@ -441,7 +441,7 @@ INT RtmpAsicSendCommandToMcu(
 
 #ifdef CONFIG_STA_SUPPORT
 #ifdef PCIE_PS_SUPPORT
-	ULONG	Configuration;
+	u16	Configuration;
 	ULONG	offset;
 #endif /* PCIE_PS_SUPPORT */
 #endif /* CONFIG_STA_SUPPORT */
@@ -556,10 +556,8 @@ INT RtmpAsicSendCommandToMcu(
 		{
 			offset = 0x70F;
 			pci_read_config_word(((POS_COOKIE)pAd->OS_Cookie)->pci_dev, offset, &Configuration); 
-			Configuration=le2cpu16(Configuration);
-			Configuration &= 0xffffff00;
+			Configuration &= 0xff00;
 			Configuration |= (0x13);	/* set Latency to default */
-			Configuration=le2cpu16(Configuration);
 			pci_write_config_word(((POS_COOKIE)pAd->OS_Cookie)->pci_dev, offset, Configuration);
 			DBGPRINT(RT_DEBUG_TRACE, ("Write 70f; offset = %x, Configuration = %x. \n", offset, Configuration));
 		}
@@ -576,11 +574,9 @@ INT RtmpAsicSendCommandToMcu(
 			offset = 0x70F;
 			/* Configuration = RTMPReadCBConfigXP(pAd, offset); */
 			pci_read_config_word(((POS_COOKIE)pAd->OS_Cookie)->pci_dev, offset, &Configuration);
-			Configuration=le2cpu16(Configuration);
 
-			Configuration &= 0xffffff00;
+			Configuration &= 0xff00;
 			Configuration |= (0x7F);	// Set to long latency
-			Configuration=le2cpu16(Configuration);
 
 			pci_write_config_word(((POS_COOKIE)pAd->OS_Cookie)->pci_dev, offset, Configuration);
 
